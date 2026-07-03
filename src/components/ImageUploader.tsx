@@ -49,7 +49,7 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
     };
   }, [previewUrl]);
 
-  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
 
     setDragging(false);
@@ -66,22 +66,26 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
   return (
     <>
       <input
-        hidden
+        id="receipt-upload"
         ref={inputRef}
         type="file"
         accept="image/*"
+        capture="environment"
+        className="hidden"
         onChange={async (e) => {
           const file = e.target.files?.[0];
 
           if (!file) return;
 
           await handleFile(file);
+
+          e.target.value = "";
         }}
       />
 
       {!selectedFile ? (
-        <div
-          onClick={handleBrowse}
+        <label
+          htmlFor="receipt-upload"
           onDrop={handleDrop}
           onDragOver={(e) => {
             e.preventDefault();
@@ -100,11 +104,11 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
 
           <div
             className={cn(
-              "absolute inset-0 opacity-0 transition-opacity duration-500",
+              "absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-500",
               dragging && "opacity-100",
             )}
           >
-            <div className="absolute inset-x-0 top-0 h-32 bg-primary/5 blur-3xl" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-primary/5 blur-3xl" />
           </div>
 
           {/* Icon */}
@@ -128,8 +132,13 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
             </h3>
 
             <p className="mx-auto max-w-md text-base leading-7 text-muted-foreground">
-              Drag & drop a receipt image or click anywhere to browse from your
-              device.
+              <span className="hidden sm:inline">
+                Drag & drop a receipt image or click anywhere to browse.
+              </span>
+
+              <span className="sm:hidden">
+                Tap anywhere to choose a receipt image.
+              </span>
             </p>
           </div>
 
@@ -148,13 +157,13 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
             <ImagePlus className="h-4 w-4" />
             Click to browse your files
           </div>
-        </div>
+        </label>
       ) : (
         <div className="rounded-[28px] border bg-card p-8">
           <div className="flex flex-col gap-8 lg:flex-row">
             {/* Preview */}
 
-            <div className="relative aspect-[3/4] w-full max-w-[220px] overflow-hidden rounded-2xl border">
+            <div className="relative mx-auto aspect-[3/4] w-full max-w-[220px] overflow-hidden rounded-2xl border lg:mx-0">
               {previewUrl && (
                 <Image
                   src={previewUrl}
@@ -193,9 +202,13 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
 
               <div className="mt-auto pt-8">
                 <Button
+                  type="button"
                   variant="outline"
-                  onClick={handleBrowse}
                   className="rounded-xl"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    inputRef.current?.click();
+                  }}
                 >
                   <RefreshCcw className="mr-2 h-4 w-4" />
                   Replace Receipt

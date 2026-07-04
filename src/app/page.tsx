@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createWorker } from "tesseract.js";
 
+import { ReceiptItem, ReceiptData } from "@/types/receipt";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/HeroT";
 import Workspace from "@/components/WorkspaceT";
@@ -11,34 +12,19 @@ import FeatureGrid from "@/components/FeatureGrid";
 import ResultPanel from "@/components/ResultPanel";
 import Footer from "@/components/Footer";
 
-// Definisikan interface agar TypeScript mengenali struktur data dari Gemini AI
-interface ReceiptItem {
-  nama: string;
-  harga: number;
-  qty: number;
-}
-
-interface ReceiptData {
-  nama_toko: string | null;
-  tanggal: string | null;
-  item_belanja: ReceiptItem[];
-  total_harga: number;
-}
-
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [rawText, setRawText] = useState("");
-  const [aiData, setAiData] = useState<ReceiptData | null>(null); // ⭐ 1. STATE BARU UNTUK MENAMPUNG HASIL AI
+  const [aiData, setAiData] = useState<ReceiptData | null>(null);
 
   const handleImageSelected = async (file: File) => {
     setLoading(true);
     setRawText("");
-    setAiData(null); // Reset data lama setiap kali scan baru dimulai
+    setAiData(null);
     setStatus("Initializing OCR Engine...");
 
     try {
-      // 1. Jalankan Tesseract OCR secara client-side
       const worker = await createWorker(["ind", "eng"]);
       setStatus("Sedang memindai gambar struk...");
 
@@ -67,10 +53,7 @@ export default function Home() {
 
       const parsedData: ReceiptData = await res.json();
 
-      // KUNCI UTAMA: Kita intip hasilnya dulu lewat Inspect Element Browser
-      console.log("🔥 HASIL OBJEK JSON DARI AI:", parsedData);
-
-      setAiData(parsedData); // ⭐ 2. SIMPAN HASIL JSON AI KE STATE AGAR DITERUSKAN KE FRONTLINE UI
+      setAiData(parsedData);
       setStatus("Selesai! Data belanjaan lo udah rapi.");
     } catch (error) {
       console.error("Proses Error:", error);
@@ -96,7 +79,12 @@ export default function Home() {
             </div>
 
             <div className="lg:col-span-4">
-              <Pipeline loading={loading} rawText={rawText} />
+              <Pipeline
+                loading={loading}
+                rawText={rawText}
+                isAiProcessing={!!aiData}
+                structuredData={aiData}
+              />
             </div>
           </div>
         </section>

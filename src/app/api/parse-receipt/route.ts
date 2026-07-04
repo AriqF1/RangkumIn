@@ -43,7 +43,6 @@ export async function POST(request: Request) {
 
     let responseText = response.text?.trim() || "{}";
 
-    // 🔥 ANTISIPASI: Jika AI nakal dan tetap memberikan bungkus markdown ```json ... ```
     if (responseText.startsWith("```")) {
       responseText = responseText
         .replace(/^```json/, "") // Hapus pembuka ```json
@@ -58,7 +57,7 @@ export async function POST(request: Request) {
     return NextResponse.json(parsedJson);
   } catch (error: any) {
     // Ini akan mencetak eror asli di terminal laptop kamu agar gampang di-debug
-    console.error("🔴 DETAIL ERROR DI BACKEND API:", error);
+    console.error("DETAIL ERROR DI BACKEND API:", error);
 
     return NextResponse.json(
       { error: "Gagal memproses data lewat AI", message: error.message },

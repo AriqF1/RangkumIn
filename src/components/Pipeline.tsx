@@ -5,13 +5,19 @@ import { CheckCircle2, Circle, Loader2, Sparkles } from "lucide-react";
 interface PipelineProps {
   loading: boolean;
   rawText: string;
+  isAiProcessing?: boolean;
+  structuredData?: object | null;
 }
 
-export default function Pipeline({ loading, rawText }: PipelineProps) {
+export default function Pipeline({
+  loading,
+  rawText,
+  structuredData = null,
+}: PipelineProps) {
   const uploadCompleted = loading || !!rawText;
   const ocrCompleted = !!rawText;
-  const aiCompleted = false;
-  const jsonCompleted = false;
+  const aiCompleted = !!structuredData;
+  const jsonCompleted = !!structuredData;
 
   return (
     <div className="rounded-3xl border bg-card p-8">
@@ -36,11 +42,11 @@ export default function Pipeline({ loading, rawText }: PipelineProps) {
 
         <Connector />
 
-        <Step title="AI Structuring" completed={aiCompleted} />
+        <Step title="AI Structuring" active={loading} completed={aiCompleted} />
 
         <Connector />
 
-        <Step title="JSON Output" completed={jsonCompleted} />
+        <Step title="JSON Output" active={loading} completed={jsonCompleted} />
       </div>
 
       {loading && (

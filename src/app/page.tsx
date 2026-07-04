@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { createWorker } from "tesseract.js";
 
-import { ReceiptItem, ReceiptData } from "@/types/receipt";
+import { ReceiptData } from "@/types/receipt";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/HeroT";
-import Workspace from "@/components/WorkspaceT";
-import Pipeline from "@/components/Pipeline";
+import ProcessingWorkspace from "@/components/ProcessingWorkspace";
 import FeatureGrid from "@/components/FeatureGrid";
 import ResultPanel from "@/components/ResultPanel";
 import Footer from "@/components/Footer";
@@ -68,25 +67,15 @@ export default function Home() {
       <Navbar />
 
       <main className="relative overflow-hidden bg-background pt-24">
-        {/* Hero */}
         <Hero />
 
-        {/* Workspace */}
-        <section id="workspace" className="mx-auto max-w-7xl px-6 py-8">
-          <div className="grid gap-6 lg:grid-cols-12">
-            <div className="lg:col-span-8">
-              <Workspace onImageSelected={handleImageSelected} />
-            </div>
-
-            <div className="lg:col-span-4">
-              <Pipeline
-                loading={loading}
-                rawText={rawText}
-                isAiProcessing={!!aiData}
-                structuredData={aiData}
-              />
-            </div>
-          </div>
+        <section id="workspace" className="mx-auto max-w-7xl px-2 py-8">
+          <ProcessingWorkspace
+            loading={loading}
+            rawText={rawText}
+            structuredData={aiData}
+            onImageSelected={handleImageSelected}
+          />
         </section>
 
         {(rawText || aiData) && (

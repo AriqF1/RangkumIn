@@ -57,9 +57,7 @@ export default function TabbedFeatures() {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    // 1. Lebar box luar (outer box) sekarang menggunakan styling standar
-    // tanpa pembatas max-w yang kaku, mengikuti section sebelumnya.
-    <section className="space-y-12 py-10">
+    <section className="space-y-12 py-8">
       {/* Header Section */}
       <div>
         <p className="text-sm font-semibold tracking-widest text-muted-foreground uppercase">
@@ -71,8 +69,6 @@ export default function TabbedFeatures() {
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row lg:gap-10">
-        {/* Kolom Kiri: Menu Navigasi Tabs */}
-        {/* Perbaikan 3: snap-x, overflow-x-auto, dan scroll-smooth untuk mobile */}
         <div className="flex w-full snap-x snap-mandatory flex-row gap-4 overflow-x-auto pb-4 scroll-smooth no-scrollbar lg:w-1/3 lg:flex-col lg:overflow-visible lg:pb-0">
           {features.map((feature, index) => {
             const Icon = feature.icon;
@@ -82,25 +78,22 @@ export default function TabbedFeatures() {
               <button
                 key={feature.id}
                 onClick={() => setActiveTab(index)}
-                // Menambahkan min-w-[280px] agar di mobile lebarnya konsisten dan bisa di-scroll dengan baik (flex-shrink-0)
                 className={`group relative flex w-full min-w-[280px] flex-shrink-0 snap-center items-start gap-4 rounded-2xl p-5 text-left transition-all sm:min-w-[320px] lg:min-w-0 lg:w-full ${
                   isActive
                     ? "bg-card shadow-sm border border-border ring-1 ring-primary/10"
                     : "hover:bg-muted/50 border border-transparent"
                 }`}
               >
-                {/* Indikator aktif di sisi kiri (hanya desktop) */}
                 {isActive && (
                   <motion.div
                     layoutId="active-tab-indicator"
-                    className="absolute bottom-0 left-0 top-0 hidden w-1 rounded-l-2xl bg-primary lg:block"
+                    className="absolute bottom-0 left-0 top-0 hidden w-1 rounded-l-2xl bg-white lg:block"
                     initial={false}
                   />
                 )}
 
-                {/* Perbaikan 2: Warna ikon lebih netral dan monokrom, bukan warna-warni */}
                 <div
-                  className={`mt-1 rounded-xl p-2 transition-colors ${isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground group-hover:text-foreground"}`}
+                  className={`mt-1 rounded-xl p-2 transition-colors ${isActive ? "bg-transparent text-primary" : "bg-muted text-muted-foreground group-hover:text-foreground"}`}
                 >
                   <Icon className="h-5 w-5" />
                 </div>

@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-
-import { ScanSearch, ImagePlus, RefreshCcw, CheckCircle2 } from "lucide-react";
-
+import {
+  ScanSearch,
+  ImagePlus,
+  RefreshCcw,
+  CheckCircle2,
+  FileImage,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface ImageUploaderProps {
   onImageSelected: (file: File) => Promise<void>;
@@ -16,28 +17,17 @@ interface ImageUploaderProps {
 
 export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-
   const [dragging, setDragging] = useState(false);
-
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-  const handleBrowse = () => {
-    inputRef.current?.click();
-  };
 
   const handleFile = async (file: File) => {
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
     }
-
     const url = URL.createObjectURL(file);
-
     setSelectedFile(file);
-
     setPreviewUrl(url);
-
     await onImageSelected(file);
   };
 
@@ -51,13 +41,9 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
 
   const handleDrop = async (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
-
     setDragging(false);
-
     const file = e.dataTransfer.files[0];
-
     if (!file) return;
-
     await handleFile(file);
   };
 
@@ -74,16 +60,14 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
         className="hidden"
         onChange={async (e) => {
           const file = e.target.files?.[0];
-
           if (!file) return;
-
           await handleFile(file);
-
           e.target.value = "";
         }}
       />
 
       {!selectedFile ? (
+        // Empty State: Drag & Drop Area
         <label
           htmlFor="receipt-upload"
           onDrop={handleDrop}
@@ -93,128 +77,102 @@ export default function ImageUploader({ onImageSelected }: ImageUploaderProps) {
           }}
           onDragLeave={() => setDragging(false)}
           className={cn(
-            "group relative overflow-hidden rounded-[28px] border-2 border-dashed transition-all duration-300 ease-out",
-            "flex min-h-[460px] cursor-pointer flex-col items-center justify-center px-8 text-center",
+            "group relative overflow-hidden transition-all duration-300 ease-out",
+            "flex w-full h-full min-h-[360px] cursor-pointer flex-col items-center justify-center p-8 text-center bg-background/50 border-2 border-dashed",
             dragging
-              ? "border-primary bg-primary/5 scale-[1.01]"
-              : "border-border hover:border-primary/40 hover:bg-muted/30",
+              ? "border-primary bg-primary/5"
+              : "border-border/60 hover:border-foreground/30 hover:bg-muted/40",
           )}
         >
-          {/* Background Glow */}
-
           <div
             className={cn(
-              "absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-500",
-              dragging && "opacity-100",
-            )}
-          >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-primary/5 blur-3xl" />
-          </div>
-
-          {/* Icon */}
-
-          <div
-            className={cn(
-              "relative flex h-24 w-24 items-center justify-center rounded-full border transition-all duration-300",
+              "relative flex h-16 w-16 items-center justify-center rounded-sm border border-border/60 transition-all duration-300",
               dragging
                 ? "border-primary bg-primary text-primary-foreground scale-110"
-                : "bg-muted group-hover:-translate-y-1",
+                : "bg-muted group-hover:-translate-y-1 group-hover:bg-background",
             )}
           >
-            <ScanSearch className="h-10 w-10" />
+            <ScanSearch className="h-6 w-6 text-muted-foreground group-hover:text-foreground transition-colors" />
           </div>
 
-          {/* Title */}
-
-          <div className="relative mt-8 space-y-3">
-            <h3 className="text-3xl font-bold tracking-tight">
-              Upload Receipt
+          <div className="relative mt-6 space-y-2">
+            <h3 className="text-lg font-medium tracking-tight text-foreground">
+              Select or drop receipt
             </h3>
-
-            <p className="mx-auto max-w-md text-base leading-7 text-muted-foreground">
-              <span className="hidden sm:inline">
-                Drag & drop a receipt image or click anywhere to browse.
-              </span>
-
-              <span className="sm:hidden">
-                Tap anywhere to choose a receipt image.
-              </span>
+            <p className="mx-auto max-w-sm text-sm text-muted-foreground leading-relaxed">
+              Upload an image of your receipt to begin extraction. High contrast
+              images work best.
             </p>
           </div>
 
-          {/* Badges */}
-
-          <div className="relative mt-8 flex flex-wrap justify-center gap-2">
-            <Badge variant="secondary">JPG</Badge>
-            <Badge variant="secondary">PNG</Badge>
-            <Badge variant="secondary">WEBP</Badge>
-            <Badge variant="secondary">JPEG</Badge>
-          </div>
-
-          {/* Bottom */}
-
-          <div className="absolute bottom-8 flex items-center gap-2 text-sm text-muted-foreground">
-            <ImagePlus className="h-4 w-4" />
-            Click to browse your files
+          <div className="absolute bottom-6 flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-muted-foreground group-hover:text-foreground/70 transition-colors">
+            <ImagePlus className="h-3.5 w-3.5" />
+            Click to browse files
           </div>
         </label>
       ) : (
-        <div className="rounded-[28px] border bg-card p-8">
-          <div className="flex flex-col gap-8 lg:flex-row">
-            {/* Preview */}
+        // Active State: Preview & Metadata
+        <div className="w-full h-full min-h-[360px] flex flex-col md:flex-row items-center justify-center gap-8 bg-background border border-border/60 p-6 md:p-10 shadow-sm relative overflow-hidden">
+          {/* Subtle Background Accent */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
 
-            <div className="relative mx-auto aspect-[3/4] w-full max-w-[220px] overflow-hidden rounded-2xl border lg:mx-0">
-              {previewUrl && (
+          {/* Receipt Preview Container */}
+          <div className="relative flex-shrink-0 w-full max-w-[200px] aspect-[1/1.4] bg-muted/30 border border-border/80 shadow-sm overflow-hidden flex items-center justify-center p-2">
+            {previewUrl ? (
+              <div className="relative w-full h-full overflow-hidden border border-border/40">
                 <Image
                   src={previewUrl}
                   alt="Receipt Preview"
                   fill
-                  className="object-cover"
+                  className="object-cover object-top opacity-90"
                 />
-              )}
+                {/* Simulated scanning line animation overlay */}
+                <div className="absolute top-0 left-0 w-full h-0.5 bg-primary/60 shadow-[0_0_8px_rgba(var(--primary),0.8)] animate-[scan_3s_ease-in-out_infinite]" />
+              </div>
+            ) : (
+              <FileImage className="h-8 w-8 text-muted-foreground/30" />
+            )}
+          </div>
+
+          {/* Metadata & Actions */}
+          <div className="flex flex-col flex-1 w-full max-w-md items-start text-left space-y-5 z-10">
+            <div className="flex items-center gap-2 border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-emerald-600 dark:text-emerald-400">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span className="text-[10px] font-mono uppercase tracking-widest font-semibold">
+                Image Loaded
+              </span>
             </div>
 
-            {/* Metadata */}
-
-            <div className="flex flex-1 flex-col">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-
-                <span className="font-semibold">Ready for OCR</span>
-              </div>
-
-              <h3 className="mt-6 text-2xl font-bold break-all">
+            <div className="space-y-1.5 w-full">
+              <h3
+                className="text-base font-medium text-foreground truncate max-w-full"
+                title={selectedFile.name}
+              >
                 {selectedFile.name}
               </h3>
-
-              <div className="mt-5 flex flex-wrap gap-2">
-                <Badge variant="secondary">{extension} Image</Badge>
-
-                <Badge variant="secondary">
-                  {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                </Badge>
-              </div>
-
-              <p className="mt-6 max-w-lg leading-7 text-muted-foreground">
-                Your receipt has been uploaded successfully. Continue to OCR
-                extraction to convert the image into structured text.
-              </p>
-
-              <div className="mt-auto pt-8">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="rounded-xl"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    inputRef.current?.click();
-                  }}
-                >
-                  <RefreshCcw className="mr-2 h-4 w-4" />
-                  Replace Receipt
-                </Button>
+              <div className="flex items-center gap-3 text-xs font-mono text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40"></span>
+                  {extension}
+                </span>
+                <span className="text-border">|</span>
+                <span>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
               </div>
             </div>
+
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Image acquired. Processing pipeline initialized. The engine is
+              extracting raw text before structuring the data.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="mt-2 inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-border bg-background hover:bg-muted hover:text-foreground h-9 px-4 py-2"
+            >
+              <RefreshCcw className="h-3.5 w-3.5" />
+              Load Different Image
+            </button>
           </div>
         </div>
       )}

@@ -3,9 +3,8 @@ import { Globe, GitGraphIcon, Code2 } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t bg-background">
+    <footer className="mt-2 border-t bg-background">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-14 md:flex-row md:justify-between">
-        {/* Bagian Kiri: Brand & Deskripsi */}
         <div className="space-y-4 md:w-1/2">
           <h3 className="text-xl font-bold tracking-tight">RangkumIn</h3>
 

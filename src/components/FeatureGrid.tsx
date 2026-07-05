@@ -13,43 +13,43 @@ import {
 const features = [
   {
     id: "ocr",
-    title: "Ekstraksi Teks Instan",
-    subtitle: "Tesseract.js di dalam browser",
+    title: "Instant Text Extraction",
+    subtitle: "Tesseract.js in the browser",
     description:
-      "Upload foto struk belanja, dan sistem kami akan langsung membaca setiap baris teks tanpa perlu mengirim gambar ke server. Cepat dan responsif.",
+      "Upload a photo of your receipt, and our system will instantly read every line of text without sending the image to a server. Fast and responsive.",
     icon: ScanText,
     visualMockup:
-      "Memulai proses pemindaian lokal...\n[OK] Tesseract Engine Loaded\n[OK] Mengekstrak teks dari gambar...",
+      "Starting local scanning process...\n[OK] Tesseract Engine Loaded\n[OK] Extracting text from image...",
   },
   {
     id: "ai",
     title: "AI Structuring",
-    subtitle: "Rapikan teks mentah",
+    subtitle: "Clean up raw text",
     description:
-      "Teks yang berantakan dari struk otomatis disusun oleh AI. Kami mengkategorikan nama item, jumlah, harga, dan total secara cerdas.",
+      "Messy text from receipts is automatically structured by AI. We intelligently categorize item names, quantities, prices, and totals.",
     icon: Sparkles,
     visualMockup:
-      "Menganalisis teks mentah...\n[OK] Mendeteksi entitas (Item, Harga, Tanggal)\n[OK] Menyusun struktur data...",
+      "Analyzing raw text...\n[OK] Detecting entities (Item, Price, Date)\n[OK] Structuring data...",
   },
   {
     id: "json",
     title: "Ready as JSON",
-    subtitle: "Format siap pakai",
+    subtitle: "Ready-to-use format",
     description:
-      "Hasil akhir disajikan dalam format JSON terstruktur. Sangat mudah disalin dan diintegrasikan langsung ke aplikasi keuangan atau database-mu.",
+      "The final result is presented in a structured JSON format. It's incredibly easy to copy and integrate directly into your financial apps or database.",
     icon: FileJson,
     visualMockup:
-      '{\n  "merchant": "Supermarket",\n  "date": "2023-10-27",\n  "items": [\n    { "name": "Kopi", "price": 45000 }\n  ],\n  "total": 45000\n}',
+      '{\n  "merchant": "Supermarket",\n  "date": "2023-10-27",\n  "items": [\n    { "name": "Coffee", "price": 45000 }\n  ],\n  "total": 45000\n}',
   },
   {
     id: "privacy",
-    title: "Privasi Terjamin",
+    title: "Guaranteed Privacy",
     subtitle: "100% Local Processing",
     description:
-      "Privasi adalah prioritas. Struk belanjamu diproses sepenuhnya di perangkatmu sendiri (client-side). Tidak ada jejak yang ditinggalkan.",
+      "Privacy is our priority. Your receipts are processed entirely on your own device (client-side). No traces left behind.",
     icon: ShieldCheck,
     visualMockup:
-      "[SECURITY LOG]\n>> Semua pemrosesan OCR dilakukan di sisi klien.\n>> Tidak ada data yang diunggah.\n>> Koneksi aman.",
+      "[SECURITY LOG]\n>> All OCR processing is done on the client side.\n>> No data is uploaded.\n>> Secure connection.",
   },
 ];
 
@@ -61,10 +61,10 @@ export default function TabbedFeatures() {
       {/* Header Section */}
       <div>
         <p className="text-sm font-semibold tracking-widest text-muted-foreground uppercase">
-          Alur Pemrosesan RangkumIn
+          RangkumIn Processing Flow
         </p>
         <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-          Dari Struk Menjadi Data Terstruktur.
+          From Receipts to Structured Data.
         </h2>
       </div>
 
@@ -119,8 +119,7 @@ export default function TabbedFeatures() {
           })}
         </div>
 
-        {/* Kolom Kanan: Visual Showcase Besar */}
-        {/* Perbaikan 2: Menghapus gradien warna-warni, menggunakan warna netral (bg-card / bg-muted) */}
+        {/* Right Column -> Large Visual Showcase */}
         <div className="relative w-full overflow-hidden rounded-3xl border bg-card shadow-sm lg:w-2/3 min-h-[400px] lg:min-h-[500px]">
           <AnimatePresence mode="wait">
             <motion.div
@@ -129,10 +128,9 @@ export default function TabbedFeatures() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              // Latar belakang sekarang seragam dan bersih
               className="absolute inset-0 flex flex-col justify-between bg-muted/10 p-6 lg:p-10"
             >
-              {/* Deskripsi */}
+              {/* Description */}
               <div className="max-w-xl space-y-4">
                 <h4 className="text-2xl font-bold">
                   {features[activeTab].title}
@@ -142,17 +140,13 @@ export default function TabbedFeatures() {
                 </p>
               </div>
 
-              {/* Area Tengah untuk Terminal / Code Window */}
-              {/* Desain dibuat menyerupai jendela terminal/kode yang elegan */}
               <div className="mt-8 flex flex-1 w-full items-start justify-start overflow-hidden rounded-2xl border bg-zinc-950 shadow-inner">
                 <div className="w-full flex-col flex">
-                  {/* Header mock terminal */}
                   <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900 px-4 py-3">
                     <div className="h-3 w-3 rounded-full bg-zinc-700" />
                     <div className="h-3 w-3 rounded-full bg-zinc-700" />
                     <div className="h-3 w-3 rounded-full bg-zinc-700" />
                   </div>
-                  {/* Isi mock terminal */}
                   <pre className="p-4 md:p-6 font-mono text-sm md:text-base text-zinc-300 whitespace-pre-wrap">
                     {features[activeTab].visualMockup}
                   </pre>

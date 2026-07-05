@@ -45,15 +45,36 @@ export default function ResultPanel({
   const [jumlahOrang, setJumlahOrang] = useState(1);
   const [copied, setCopied] = useState(false);
 
-  const handleCopyWhatsApp = () => {
+  const handleCopyWhatsApp = async () => {
     if (!editableData) return;
 
-    navigator.clipboard.writeText(
-      formatWhatsappReceipt(editableData, jumlahOrang),
-    );
+    const text = formatWhatsappReceipt(editableData, jumlahOrang);
 
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textArea = document.createElement("textarea");
+
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "-9999px";
+
+        document.body.appendChild(textArea);
+
+        textArea.focus();
+        textArea.select();
+
+        document.execCommand("copy");
+
+        document.body.removeChild(textArea);
+      }
+
+      console.log("Berhasil disalin");
+    } catch (error) {
+      console.error("Gagal menyalin:", error);
+    }
   };
 
   return (
